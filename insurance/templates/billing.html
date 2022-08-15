@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Billing</title>
+    </head>
+    <body>
+        <h1>BILLING ACCOUNT</h1>
+        <div>
+            {% if data %}
+                {% for row in data %}
+                    <div>
+                        <p>
+                            {{ row['BAccount_name'] }}:<br/>
+                            {{ row['Baddress1'] }}, {{ row['Baddress2'] }}<br/>
+                            {{ row['BCity'] }}, {{ row['BState'] }}, {{ row['BZip'] }}<br/>
+                        </p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            <form action="/addBilling" method="post">
+                <input type="text" name="bacctName" placeholder="Account Name" required/>
+                <br/>
+                <input type="text" name="bacctName2" placeholder="Account Name 2 (optional)"/>
+                <br/>
+                <input type="text" name="bAddress1" placeholder="Address 1" required/>
+                <br/>
+                <input type="text" name="bAddress2" placeholder="Address 2 (optional)"/>
+                <br/>
+                <input type="text" name="bCity" placeholder="City" required/>
+                <br/>
+                <input type="text" name="bState" placeholder="State" required/>
+                <br/>
+                <input type="text" name="bZip" placeholder="Zip" required/>
+                <br/>
+                <input type="submit" value="Add">
+            </form>
+            {% if error %}
+                {{ error }}
+            {% endif %}
+        </div>
+        <a href="/home">back</a>
+    </body>
+</html>

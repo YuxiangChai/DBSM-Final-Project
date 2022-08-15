@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Register</title>
+    </head>
+    <body>
+        <h1>REGISTER</h1>
+        <div>
+            <form action="/registerAuth" method="post">
+                <input type="text" name="username" placeholder="Username" required/>
+                <br/>
+                <input type="password" name="password" placeholder="Password" required/>
+                <br/>
+                <input type="text" name="fname" placeholder="First Name" required/>
+                <br/>
+                <input type="text" name="lname" placeholder="Last Name" required/>
+                <br/>
+                <input type="text" name="midinit" placeholder="Middle Initial" />
+                <br/>
+                <input type="text" name="dob" placeholder="Date of Birth (mm/dd/yyyy)" required/>
+                <br/>
+                <input type="text" name="gender" placeholder="Gender (male/female)" required/>
+                <br/>
+                <input type="text" name="email" placeholder="Email" required/>
+                <br/>
+                <input type="text" name="ssn" placeholder="SSN" required/>
+                <br/>
+                <input type="text" name="n_children" placeholder="No. Of Children" required/>
+                <br/>
+                <input type="text" name="smoke" placeholder="Smoke? (yes/no)" required/>
+                <br/>
+                <input type="text" name="region" placeholder="Region (northwest, northeast, southwest, southeast)" required/>
+                <br/>
+                <input type="text" name="bmi" placeholder="bmi" required/>
+                <br/>
+                <input type="submit" value="Register">
+            </form>
+        </div>
+        {% if error %}
+            {{ error }}
+        {% endif %}
+        <a href="/">back</a>
+    </body>
+</html>

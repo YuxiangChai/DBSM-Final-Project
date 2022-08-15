@@ -1,0 +1,244 @@
+DROP TABLE IF EXISTS CUSTOMER_ASSO;
+DROP TABLE IF EXISTS ACCT_MNG_CONTRACT;
+DROP TABLE IF EXISTS MNG_CONTRACT;
+DROP TABLE IF EXISTS ASSO_RELATION;
+DROP TABLE IF EXISTS ASSOCIATE;
+DROP TABLE IF EXISTS HAS_BENEFIT;
+DROP TABLE IF EXISTS HAS_CONTRACT;
+DROP TABLE IF EXISTS CONT_PREMIUM;
+DROP TABLE IF EXISTS CONT_BENEFIT;
+DROP TABLE IF EXISTS CONTRACT;
+DROP TABLE IF EXISTS ALIAS;
+DROP TABLE IF EXISTS ADMIN;
+DROP TABLE IF EXISTS ACCT_ADMIN;
+DROP TABLE IF EXISTS ACCT_BILLING_ACCT;
+DROP TABLE IF EXISTS BILLING_ACCOUNT;
+DROP TABLE IF EXISTS ACCT_MEMBER;
+DROP TABLE IF EXISTS ACCT_RELATION;
+DROP TABLE IF EXISTS ACCOUNT;
+DROP TABLE IF EXISTS CUST_RELATION;
+DROP TABLE IF EXISTS CUST_INFO;
+DROP TABLE IF EXISTS CUSTOMER;
+
+
+
+CREATE TABLE CUSTOMER (
+	First_name VARCHAR(20),
+    Last_name VARCHAR(20),
+    Middle_init CHAR,
+    DOB DATE,
+    Suffix VARCHAR(10),
+    Gender VARCHAR(10) NOT NULL,
+    Email VARCHAR(40),
+    SSN CHAR(9) NOT NULL,
+    SSN_type VARCHAR(10),
+    PRIMARY KEY (SSN)
+);
+
+CREATE TABLE CUST_INFO (
+	SSN CHAR(9) NOT NULL,
+    Age INT NOT NULL,
+    GENDER VARCHAR(10) NOT NULL,
+    Children INT NOT NULL,
+    Smoker CHAR(1) NOT NULL,
+    Region VARCHAR(15) NOT NULL,
+    Charges FLOAT NOT NULL,
+    PRIMARY KEY (SSN),
+    FOREIGN KEY (SSN) REFERENCES CUSTOMER(SSN)
+);
+
+CREATE TABLE CUST_RELATION (
+	SSN CHAR(9) NOT NULL,
+    RSSN CHAR(9) NOT NULL,
+    Relation VARCHAR(20),
+    Start_date DATE,
+    End_date DATE,
+    PRIMARY KEY (SSN, RSSN),
+    FOREIGN KEY (SSN) REFERENCES CUSTOMER(SSN),
+    FOREIGN KEY (RSSN) REFERENCES CUSTOMER(SSN)
+);
+
+CREATE TABLE ACCOUNT (
+	Account_name VARCHAR(20) NOT NULL,
+    Account_name2 VARCHAR(20),
+    Address1 VARCHAR(40),
+    Address2 VARCHAR(40),
+    City VARCHAR(40),
+    State VARCHAR(20),
+    Zip CHAR(5),
+    Company_code VARCHAR(10),
+    PRIMARY KEY (Account_name)
+);
+
+CREATE TABLE ACCT_RELATION (
+	Account_name1 VARCHAR(20) NOT NULL,
+    Re_acct_name1 VARCHAR(20) NOT NULL,
+    Relation_type VARCHAR(10),
+    Start_date DATE,
+    PRIMARY KEY (Account_name1, Re_acct_name1),
+    FOREIGN KEY (Account_name1) REFERENCES ACCOUNT(Account_name),
+    FOREIGN KEY (Re_acct_name1) REFERENCES ACCOUNT(Account_name)
+);
+
+CREATE TABLE ACCT_MEMBER (
+	First_name VARCHAR(20),
+    Last_name VARCHAR(20),
+    MemberID VARCHAR(20) NOT NULL,
+    DOB DATE,
+    Suffix VARCHAR(10),
+    Start_date DATE,
+    Account_name VARCHAR(20) NOT NULL,
+    SSN CHAR(9) NOT NULL,
+    PRIMARY KEY (MemberID, Account_name, SSN),
+    FOREIGN KEY (Account_name) REFERENCES ACCOUNT(Account_name),
+    FOREIGN KEY (SSN) REFERENCES CUSTOMER(SSN)
+);
+
+CREATE TABLE BILLING_ACCOUNT (
+	BAccount_name VARCHAR(20) NOT NULL,
+    BAccount_name2 VARCHAR(20),
+    Baddress1 VARCHAR(40),
+    Baddress2 VARCHAR(20),
+    BCity VARCHAR(20),
+    BState VARCHAR(20),
+    BZip CHAR(5),
+    PRIMARY KEY (BAccount_name)
+);
+
+CREATE TABLE ACCT_BILLING_ACCT (
+	Account_name VARCHAR(40) NOT NULL,
+    BAccount_name VARCHAR(40) NOT NULL,
+    Relation_type VARCHAR(20),
+    Start_date DATE,
+    PRIMARY KEY (Account_name, BAccount_name),
+    FOREIGN KEY (Account_name) REFERENCES ACCOUNT(Account_name),
+    FOREIGN KEY (BAccount_name) REFERENCES BILLING_ACCOUNT(BAccount_name)
+);
+
+CREATE TABLE ACCT_ADMIN (
+	AdID VARCHAR(20) NOT NULL,
+    AdLastName VARCHAR(20),
+    AdFirstName VARCHAR(20),
+    AdMiddleInit CHAR(1),
+    AdSuffix VARCHAR(10),
+    AdAddress1 VARCHAR(20),
+    AdAddress2 VARCHAR(20),
+    AdCity VARCHAR(20),
+    AdState VARCHAR(20),
+    AdZip CHAR(5),
+    AdPhone CHAR(9),
+    PRIMARY KEY (AdID)
+);
+
+CREATE TABLE ADMIN (
+	AdID VARCHAR(20) NOT NULL,
+    Account_name VARCHAR(20) NOT NULL,
+    PRIMARY KEY (AdID, Account_name),
+    FOREIGN KEY (AdID) REFERENCES ACCT_ADMIN(AdID),
+    FOREIGN KEY (Account_name) REFERENCES ACCOUNT(Account_name)
+);
+
+CREATE TABLE ALIAS (
+	Account_name VARCHAR(20) NOT NULL,
+    AliasID VARCHAR(20) NOT NULL,
+    AliasSource VARCHAR(20),
+    Alias_name VARCHAR(20),
+    Alias_address1 VARCHAR(20),
+    Alias_address2 VARCHAR(20),
+    Alias_city VARCHAR(20),
+    Alias_state VARCHAR(20),
+    Alias_zip CHAR(5),
+    PRIMARY KEY (Account_name, AliasID),
+    FOREIGN KEY (Account_name) REFERENCES ACCOUNT(Account_name)
+);
+
+CREATE TABLE CONTRACT (
+	Contract_number VARCHAR(20) NOT NULL,
+    Life_of_business VARCHAR(20),
+    Series_name VARCHAR(20),
+    Plan_name VARCHAR(40),
+    PRIMARY KEY (Contract_number)
+);
+
+CREATE TABLE CONT_BENEFIT (
+	Contract_number VARCHAR(20) NOT NULL,
+    Rider_name VARCHAR(20) NOT NULL,
+    PRIMARY KEY (Contract_number, Rider_name),
+    FOREIGN KEY (Contract_number) REFERENCES CONTRACT(Contract_number)
+);
+
+CREATE TABLE CONT_PREMIUM (
+	Contract_number VARCHAR(20) NOT NULL,
+    Rider_name VARCHAR(20) NOT NULL,
+    Premium_code VARCHAR(20) NOT NULL,
+    PRIMARY KEY (Contract_number, Rider_name, Premium_code),
+    FOREIGN KEY (Contract_number, Rider_name) REFERENCES CONT_BENEFIT(Contract_number, Rider_name)
+);
+
+CREATE TABLE HAS_CONTRACT (
+	SSN CHAR(9) NOt NULL,
+    Contract_number VARCHAR(20) NOT NULL,
+    PRIMARY KEY (SSN, Contract_number),
+    FOREIGN KEY (SSN) REFERENCES CUSTOMER(SSN),
+    FOREIGN KEY (Contract_number) REFERENCES CONTRACT(Contract_number)
+);
+
+CREATE TABLE HAS_BENEFIT (
+	Contract_number VARCHAR(20) NOT NULL,
+    Rider_name VARCHAR(20) NOT NULL,
+    SSN CHAR(9) NOT NULL,
+    PRIMARY KEY (SSN, Contract_number, Rider_name),
+    FOREIGN KEY (SSN) REFERENCES CUSTOMER(SSN),
+    FOREIGN KEY (Contract_number, Rider_name) REFERENCES CONT_BENEFIT(Contract_number, Rider_name)
+);
+
+CREATE TABLE ASSOCIATE (
+	AssoID VARCHAR(20) NOT NULL,
+    AssoLastName VARCHAR(20),
+    AssoFirstName VARCHAR(20),
+    AssoMiddleInit CHAR(1),
+    AssoDOB DATE,
+    AssoSuffix VARCHAR(10),
+    PRIMARY KEY (AssoID)
+);
+
+CREATE TABLE ASSO_RELATION (
+	AssoID VARCHAR(20) NOT NULL,
+    RAssoID VARCHAR(20) NOT NULL,
+    Relation_type VARCHAR(20),
+    PRIMARY KEY (AssoID, RAssoID),
+    FOREIGN KEY (AssoID) REFERENCES ASSOCIATE(AssoID),
+    FOREIGN KEY (RAssoID) REFERENCES ASSOCIATE(AssoID)
+);
+
+CREATE TABLE MNG_CONTRACT (
+	SitCode VARCHAR(20) NOT NULL,
+    WritingNumber VARCHAR(20) NOT NULL,
+    CompanyCode VARCHAR(20) NOT NULL,
+    Level VARCHAR(10),
+    IssueDate DATE,
+    AssoID VARCHAR(20),
+    PRIMARY KEY (SitCode, WritingNumber, CompanyCode),
+    FOREIGN KEY (AssoID) REFERENCES ASSOCIATE(AssoID)
+);
+
+CREATE TABLE ACCT_MNG_CONTRACT (
+	Account_name VARCHAR(20) NOT NULL,
+    SitCode VARCHAR(20) NOT NULL,
+    WritingNumber VARCHAR(20) NOT NULL,
+    CompanyCode VARCHAR(20) NOT NULL,
+    Start_date DATE,
+    Stop_date DATE,
+    PRIMARY KEY (Account_name, SitCode, WritingNumber, CompanyCode),
+    FOREIGN KEY (Account_name) REFERENCES ACCOUNT(Account_name),
+    FOREIGN KEY (SitCode, WritingNumber, CompanyCode) REFERENCES MNG_CONTRACT(SitCode, WritingNumber, CompanyCode)
+);
+
+CREATE TABLE CUSTOMER_ASSO (
+	SSN CHAR(9) NOT NULL,
+    AssoID VARCHAR(20) NOT NULL,
+    PRIMARY KEY (SSN, AssoID),
+    FOREIGN KEY (SSN) REFERENCES CUSTOMER(SSN),
+    FOREIGN KEY (AssoID) REFERENCES ASSOCIATE(AssoID)
+);
+    

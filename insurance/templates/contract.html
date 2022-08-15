@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Contract</title>
+    </head>
+    <body>
+        <h1>CONTRACT</h1>
+        <div>
+            {% if data %}
+                {% for row in data %}
+                    <div>
+                        <p>
+                            Contract Number: {{ row['Contract_number'] }}<br/>
+                            Life of Business: {{ row['Life_of_business'] }}<br/>
+                            Series Name: {{ row['Series_name'] }}<br/>
+                            Plan Name: {{ row['Plan_name'] }}<br/>
+                        </p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            <form action="/addContract" method="post">
+                <input type="text" name="contractNumber" placeholder="Contract Number" required/>
+                <br/>
+                <input type="text" name="lifeOfBusiness" placeholder="Life of Business" />
+                <br/>
+                <input type="text" name="seriesName" placeholder="Series Name" />
+                <br/>
+                <input type="text" name="planName" placeholder="Plan Name" />
+                <br/>
+                <input type="submit" value="Add">
+            </form>
+            {% if error %}
+                {{ error }}
+            {% endif %}
+        </div>
+        <a href="/home">back</a>
+    </body>
+</html>
